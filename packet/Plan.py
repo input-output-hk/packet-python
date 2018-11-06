@@ -11,6 +11,7 @@ class Plan:
         self.pricing = data["pricing"]
         self.specs = data["specs"]
         self.description = data["description"]
+        self.available_in = data["available_in"]
 
     def __str__(self):
         return "%s" % (self.slug)

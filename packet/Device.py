@@ -21,11 +21,16 @@ class Device:
         self.spot_instance = data.get("spot_instance")
         self.spot_price_max = data.get("spot_price_max")
         self.ssh_keys = data.get("ssh_keys", [])
+        # one of: queued provisioning active powering_off powering_on inactive
         self.state = data["state"]
         self.tags = data["tags"]
         self.termination_time = data.get("termination_time")
         self.updated_at = data["updated_at"]
         self.user = data["user"]
+        if 'provisioning_percentage' in data:
+            self.provisioning_percentage = data['provisioning_percentage']
+        else:
+            self.provisioning_percentage = None
 
     def update(self):
         params = {"hostname": self.hostname, "locked": self.locked, "tags": self.tags}
