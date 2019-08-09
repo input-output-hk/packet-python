@@ -16,6 +16,7 @@ with pkgs;
 mkShell {
   buildInputs = [
     python3
+    python3Packages.ipython
     python3Packages.black
     python3Packages.flake8
     python3Packages.pylama

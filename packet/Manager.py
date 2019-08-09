@@ -101,8 +101,10 @@ class Manager(BaseAPI):
         always_pxe=False,
         billing_cycle="hourly",
         features={},
+        hardware_reservation_id=False,
         ipxe_script_url="",
         locked=False,
+        storage=False,
         project_ssh_keys=[],
         public_ipv4_subnet_size=31,
         spot_instance=False,
@@ -137,6 +139,10 @@ class Manager(BaseAPI):
             params["spot_instance"] = spot_instance
             params["spot_price_max"] = spot_price_max
             params["termination_time"] = termination_time
+        if hardware_reservation_id:
+            params["hardware_reservation_id"] = hardware_reservation_id
+            if storage:
+                params["storage"] = storage
         data = self.call_api(
             "projects/%s/devices" % project_id, type="POST", params=params
         )

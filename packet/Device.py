@@ -19,6 +19,7 @@ class Device:
         self.operating_system = OperatingSystem(data["operating_system"])
         self.plan = data["plan"]
         self.spot_instance = data.get("spot_instance")
+        self.hardware_reservation_id = data.get("hardware_reservation_id")
         self.spot_price_max = data.get("spot_price_max")
         self.ssh_keys = data.get("ssh_keys", [])
         # one of: queued provisioning active powering_off powering_on inactive
