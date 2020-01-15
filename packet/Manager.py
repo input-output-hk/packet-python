@@ -105,6 +105,7 @@ class Manager(BaseAPI):
         ipxe_script_url="",
         locked=False,
         storage=False,
+        customdata=False,
         project_ssh_keys=[],
         public_ipv4_subnet_size=31,
         spot_instance=False,
@@ -139,6 +140,8 @@ class Manager(BaseAPI):
             params["spot_instance"] = spot_instance
             params["spot_price_max"] = spot_price_max
             params["termination_time"] = termination_time
+        if customdata:
+            params["customdata"] = customdata
         if hardware_reservation_id:
             params["hardware_reservation_id"] = hardware_reservation_id
             if storage:
