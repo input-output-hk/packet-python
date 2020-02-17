@@ -4,6 +4,7 @@
 import json
 import logging
 import requests
+import re
 
 
 class Error(Exception):  # pragma: no cover
@@ -83,18 +84,28 @@ class BaseAPI(object):
         else:
             data = resp.content  # pragma: no cover
 
-        if not resp.ok:  # pragma: no cover
+        api_check_skip = re.match(r'.*?projects/.*?/ssh-keys', method)
+        if not resp.ok and not (type == "POST" and api_check_skip and resp.status_code == 404):
             msg = data
             if not data:
                 msg = "(empty response)"
             elif "errors" in data:
                 msg = ", ".join(data["errors"])
             raise Error("Error {0}: {1}".format(resp.status_code, msg))
+        elif not resp.ok and (type == "POST" and api_check_skip and resp.status_code == 404):
+            self._log.debug("%s" % "Skipping ssh-key push error on packet.net")
 
-        try:
-            resp.raise_for_status()
-        except requests.HTTPError as e:  # pragma: no cover
-            raise Error("Error {0}: {1}".format(resp.status_code, resp.reason), e)
+        if not (type == "POST" and api_check_skip and resp.status_code == 404):
+            try:
+                resp.raise_for_status()
+            except requests.HTTPError as e:  # pragma: no cover
+                raise Error("Error {0}: {1}".format(resp.status_code, resp.reason), e)
+        else:
+            self._log.debug("%s" % "Skipping raising an error for ssh-key push on packet.net")
+            all_keys = self.call_api("ssh-keys", params={})
+            for jsoned in all_keys["ssh_keys"]:
+                if jsoned["label"] == params["label"]:
+                    data = jsoned
 
         self.meta = None
         try:
